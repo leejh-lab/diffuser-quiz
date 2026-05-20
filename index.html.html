@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나의 공간에 딱 맞는 향기는? 🕯️</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --blush: #F2D9CE;
+    --rose: #C9826B;
+    --dusty: #A0856F;
+    --deep: #5C3D2E;
+    --mist: #E8DDD5;
+    --sage: #9BAF96;
+    --lavender: #C4B5D0;
+    --gold: #C9A96E;
+    --text: #3A2820;
+    --text-muted: #8B6E5E;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Gowun Dodum', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(201,130,107,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 80% 90%, rgba(155,175,150,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 60% 40%, rgba(196,181,208,0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+    padding: 1rem;
+  }
+
+  /* ── SCREEN ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── CARD ── */
+  .card {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(201,130,107,0.18);
+    border-radius: 28px;
+    padding: 2.5rem 2rem;
+    box-shadow: 0 8px 48px rgba(92,61,46,0.08), 0 2px 8px rgba(92,61,46,0.04);
+  }
+
+  /* ── START ── */
+  .start-visual {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .candle-icon {
+    font-size: 56px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+    margin-bottom: 0.25rem;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .brand-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--rose);
+    border: 1px solid rgba(201,130,107,0.35);
+    padding: 4px 14px;
+    border-radius: 99px;
+    margin-bottom: 1.25rem;
+  }
+  .start-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--deep);
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: .75rem;
+  }
+  .start-sub {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .scent-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .scent-pill {
+    background: var(--mist);
+    color: var(--dusty);
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 99px;
+  }
+
+  /* ── BTN ── */
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .22s ease;
+    letter-spacing: .02em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--rose) 0%, var(--dusty) 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(201,130,107,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,130,107,0.4); }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-outline {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--mist);
+    margin-top: 10px;
+    font-size: 13px;
+  }
+  .btn-outline:hover { background: var(--mist); }
+
+  /* ── PROGRESS ── */
+  .progress-area {
+    margin-bottom: 1.5rem;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-step {
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--rose);
+    font-weight: 500;
+  }
+  .progress-frac {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--mist);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rose), var(--gold));
+    border-radius: 99px;
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── QUESTION ── */
+  .q-tag {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: .4rem;
+  }
+  .q-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--deep);
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(201,130,107,0.15);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all .2s ease;
+    text-align: left;
+    width: 100%;
+    font-family: 'Gowun Dodum', sans-serif;
+  }
+  .opt:hover {
+    border-color: var(--rose);
+    background: rgba(242,217,206,0.35);
+    transform: translateX(4px);
+  }
+  .opt.picking {
+    border-color: var(--rose);
+    background: rgba(242,217,206,0.55);
+    transform: translateX(4px);
+  }
+  .opt-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--mist);
+    color: var(--dusty);
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all .2s;
+  }
+  .opt.picking .opt-num {
+    background: var(--rose);
+    color: #fff;
+  }
+  .opt-body { flex: 1; }
+  .opt-main {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .opt-scent {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .loading-anim {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 1.5rem;
+    animation: spin-gentle 2s ease-in-out infinite;
+  }
+  @keyframes spin-gentle {
+    0%,100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.08); }
+  }
+  .loading-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    color: var(--deep);
+    margin-bottom: .5rem;
+  }
+  .loading-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .dots {
+    display: inline-flex;
+    gap: 5px;
+    margin-top: 1rem;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--rose);
+    animation: pulse 1.4s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: .2s; }
+  .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes pulse { 0%,80%,100% { opacity:.3; transform:scale(.8); } 40% { opacity:1; transform:scale(1.1); } }
+
+  /* ── RESULT ── */
+  .result-hero {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .result-emoji {
+    font-size: 60px;
+    display: block;
+    margin-bottom: .75rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  .result-badge {
+    display: inline-block;
+    background: var(--mist);
+    color: var(--dusty);
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 99px;
+    margin-bottom: .75rem;
+  }
+  .result-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: .4rem;
+    line-height: 1.3;
+  }
+  .result-sub-name {
+    font-size: 13px;
+    color: var(--rose);
+    letter-spacing: .06em;
+    margin-bottom: 1rem;
+  }
+
+  .result-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blush), transparent);
+    margin: 1.25rem 0;
+  }
+
+  .result-quote {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--dusty);
+    text-align: center;
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+  }
+  .result-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+  }
+
+  .notes-box {
+    background: rgba(242,217,206,0.3);
+    border: 1px solid rgba(201,130,107,0.2);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .notes-label {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: .65rem;
+  }
+  .notes-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .note-chip {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(201,130,107,0.25);
+    color: var(--deep);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 99px;
+  }
+
+  .result-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--rose);
+    font-size: 13px;
+    margin-bottom: 1.5rem;
+    padding: 10px;
+    border: 1px solid rgba(201,130,107,0.25);
+    border-radius: 12px;
+    transition: background .2s;
+  }
+  .result-link:hover { background: rgba(242,217,206,0.3); }
+
+  /* transition fade */
+  .fade-enter {
+    animation: fadeIn .4s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(12px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── START ── -->
+  <div id="screen-start" class="screen active">
+    <div class="card fade-enter">
+      <div class="start-visual">
+        <span class="candle-icon">🕯️</span>
+        <div class="brand-tag">쿤달 디퓨저 향기 테스트</div>
+      </div>
+      <h1 class="start-title">나의 공간에 딱 맞는<br>향기는 무엇일까요?</h1>
+      <p class="start-sub">
+        당신의 취향과 라이프스타일을 통해<br>
+        가장 잘 어울리는 디퓨저 향기를 찾아드릴게요 🌿
+      </p>
+
+      <button class="btn btn-primary" onclick="startQuiz()">🌷 향기 찾기 시작하기</button>
+    </div>
+  </div>
+
+  <!-- ── QUESTION ── -->
+  <div id="screen-question" class="screen">
+    <div class="card">
+      <div class="progress-area">
+        <div class="progress-top">
+          <span class="progress-step" id="step-label">Q1</span>
+          <span class="progress-frac" id="frac-label">1 / 5</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <p class="q-tag" id="q-tag">Question 01</p>
+      <p class="q-text" id="q-text"></p>
+      <div class="options" id="opts"></div>
+    </div>
+  </div>
+
+  <!-- ── LOADING ── -->
+  <div id="screen-loading" class="screen">
+    <div class="card loading-screen">
+      <span class="loading-anim">🔮</span>
+      <p class="loading-title">당신의 향기를 분석하는 중이에요</p>
+      <p class="loading-sub">선택하신 답변을 바탕으로<br>가장 잘 어울리는 향기를 찾고 있어요</p>
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RESULT ── -->
+  <div id="screen-result" class="screen">
+    <div class="card fade-enter" id="result-card"></div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "내가 가장 좋아하는 공간은?",
+    opts: [
+      { text: "따뜻한 조명이 있는 포근한 침대", sub: "파우더 · 화이트머스크", cat: "머스크", scent: "화이트머스크" },
+      { text: "창문 사이로 시원한 바람이 들어오는 거실", sub: "시트러스 · 레몬버베나", cat: "시트러스", scent: "레몬버베나" },
+      { text: "잔잔하고 부드러운 향이 감도는 조용한 서재", sub: "우디 · 자스민우디", cat: "우디", scent: "자스민우디" },
+      { text: "은은한 향기가 감도는 파우더룸", sub: "플로럴 · 아카시아모링가", cat: "플로럴", scent: "아카시아모링가" }
+    ]
+  },
+  {
+    q: "상품을 선택할 때 어떤 깊이감의 향을 선호하나요?",
+    opts: [
+      { text: "자주 사용해도 부담 없는 상쾌한 향", sub: "시트러스 · 레몬버베나", cat: "시트러스", scent: "레몬버베나" },
+      { text: "존재감이 확실하게 퍼지는 화려한 향", sub: "플로럴 · 아카시아모링가", cat: "플로럴", scent: "아카시아모링가" },
+      { text: "은은하게 퍼지는 포근한 향", sub: "파우더&머스크 · 화이트머스크", cat: "머스크", scent: "화이트머스크" },
+      { text: "시간이 지날수록 묵직하고 깊게 남는 잔향", sub: "우디 · 자스민우디", cat: "우디", scent: "자스민우디" }
+    ]
+  },
+  {
+    q: "내 방을 하나의 향으로 채운다면?",
+    opts: [
+      { text: "은은한 비누 향이 감도는 호텔 침구 향", sub: "소피 · 소프트솝", cat: "소피", scent: "소프트솝" },
+      { text: "꽃들이 가득한 정원의 풍부한 꽃 향", sub: "플로럴 · 아카시아모링가", cat: "플로럴", scent: "아카시아모링가" },
+      { text: "갓 딴 과일의 달콤함이 느껴지는 과즙 향", sub: "스위트&프루티 · 블랙체리", cat: "프루티", scent: "블랙체리" },
+      { text: "깊은 산속의 고요함을 담은 우디 향", sub: "우디 · 자스민우디", cat: "우디", scent: "자스민우디" }
+    ]
+  },
+  {
+    q: "좋아하는 계절은?",
+    opts: [
+      { text: "봄 — 꽃이 피어나는 설렘", sub: "플로럴 · 아카시아모링가", cat: "플로럴", scent: "아카시아모링가" },
+      { text: "여름 — 시원하고 상쾌한 에너지", sub: "시트러스 · 레몬버베나", cat: "시트러스", scent: "레몬버베나" },
+      { text: "가을 — 깊고 차분한 분위기", sub: "우디 · 자스민우디", cat: "우디", scent: "자스민우디" },
+      { text: "겨울 — 따뜻하고 포근한 감성", sub: "머스크 · 화머", cat: "머스크", scent: "화머" }
+    ]
+  },
+  {
+    q: "기분 전환이 필요할 때 나는?",
+    opts: [
+      { text: "향긋한 입욕제와 함께 거품 목욕하기", sub: "소피 · 소프트솝", cat: "소피", scent: "소프트솝" },
+      { text: "과일이 듬뿍 들어간 달달한 디저트 먹기", sub: "스위트&프루티 · 블랙체리", cat: "프루티", scent: "블랙체리" },
+      { text: "환기를 시키거나 가벼운 동네 산책하기", sub: "시트러스 · 레몬버베나", cat: "시트러스", scent: "레몬버베나" },
+      { text: "잔잔한 음악과 함께 독서나 명상하기", sub: "우디 · 자스민우디", cat: "우디", scent: "자스민우디" }
+    ]
+  }
+];
+
+const RESULTS = {
+  "우디": {
+    emoji: "🪵",
+    name: "자스민우디",
+    nameEn: "Jasmine Woody",
+    quote: "\"고요한 숲 속, 나무 향 사이로 피어난\n자스민의 은은한 향기가 감도는 공간\"",
+    desc: "당신은 깊이 있고 차분한 향기를 선호해요. 우디 베이스에 자스민의 부드러운 플로럴이 어우러진 자스민우디는 공간에 안정감과 세련된 분위기를 더해줄 거예요. 독서하며 차 한 잔 즐기는 저녁에 딱이에요.",
+    notes: ["자스민", "시더우드", "샌달우드", "앰버", "머스크"],
+    color: "#9BAF96",
+    bg: "rgba(155,175,150,0.12)"
+  },
+  "플로럴": {
+    emoji: "🌸",
+    name: "아카시아모링가",
+    nameEn: "Acacia Moringa",
+    quote: "\"봄 정원의 풍성한 꽃향기 속에서\n새로운 하루를 맞이하는 공간\"",
+    desc: "당신은 화사하고 생기 있는 향기를 좋아해요. 아카시아와 모링가가 조화를 이루는 이 향은 공간을 봄날처럼 환하게 만들어줄 거예요. 매일 아침 기분 좋게 눈을 뜰 수 있도록 도와줄 거예요.",
+    notes: ["아카시아", "모링가", "프리지아", "머스크", "그린리프"],
+    color: "#C9826B",
+    bg: "rgba(201,130,107,0.1)"
+  },
+  "시트러스": {
+    emoji: "🍋",
+    name: "레몬버베나",
+    nameEn: "Lemon Verbena",
+    quote: "\"상쾌한 레몬 향이 가득한\n활기차고 맑은 에너지의 공간\"",
+    desc: "당신은 가볍고 산뜻한 향기를 좋아해요. 레몬버베나의 싱그러운 시트러스 향은 하루의 시작을 상쾌하게 만들어줄 거예요. 집에 들어오는 순간 기분이 환기되는 느낌을 받을 수 있어요.",
+    notes: ["레몬", "버베나", "베르가못", "라임", "그린티"],
+    color: "#C9A96E",
+    bg: "rgba(201,169,110,0.1)"
+  },
+  "머스크": {
+    emoji: "🤍",
+    name: "화이트머스크",
+    nameEn: "White Musk",
+    quote: "\"갓 세탁한 포근한 이불처럼\n따뜻하고 부드러운 향기의 공간\"",
+    desc: "당신은 은은하고 포근한 향기를 좋아해요. 화이트머스크의 클린하고 파우더리한 향은 공간을 아늑하고 편안하게 만들어줄 거예요. 피곤한 하루 끝에 집으로 돌아왔을 때 나를 감싸주는 향이에요.",
+    notes: ["화이트머스크", "파우더", "캐시미어", "바닐라", "샌달우드"],
+    color: "#C4B5D0",
+    bg: "rgba(196,181,208,0.12)"
+  },
+  "소피": {
+    emoji: "🫧",
+    name: "소프트솝",
+    nameEn: "Soft Soap",
+    quote: "\"호텔 스위트룸에 들어서는 순간\n감도는 청결하고 고급스러운 향기\"",
+    desc: "당신은 깨끗하고 클린한 향기를 좋아해요. 소프트솝의 비누처럼 투명하고 포근한 향은 공간을 항상 상쾌하게 유지해줄 거예요. 욕실이나 현관에 두면 들어오는 순간 기분이 달라져요.",
+    notes: ["솝", "머스크", "아이리스", "파우더", "화이트플로럴"],
+    color: "#A0856F",
+    bg: "rgba(160,133,111,0.1)"
+  },
+  "프루티": {
+    emoji: "🍒",
+    name: "블랙체리",
+    nameEn: "Black Cherry",
+    quote: "\"달콤하고 농익은 블랙체리 향이\n공간을 달콤하게 물들이는 순간\"",
+    desc: "당신은 달콤하고 과즙 넘치는 향기를 좋아해요. 블랙체리의 풍부하고 달콤한 과일 향은 공간을 생기 있고 기분 좋게 만들어줄 거예요. 간식 타임이나 즐거운 일상 속에 잘 어울려요.",
+    notes: ["블랙체리", "베리", "피오니", "바닐라", "머스크"],
+    color: "#C9826B",
+    bg: "rgba(180,60,60,0.08)"
+  }
+};
+
+let curQ = 0;
+let answers = [];
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function startQuiz() {
+  curQ = 0;
+  answers = [];
+  renderQ();
+  show('question');
+}
+
+function renderQ() {
+  const qd = QUESTIONS[curQ];
+  document.getElementById('step-label').textContent = 'Q' + (curQ + 1);
+  document.getElementById('frac-label').textContent = (curQ + 1) + ' / ' + QUESTIONS.length;
+  document.getElementById('prog-fill').style.width = (curQ / QUESTIONS.length * 100) + '%';
+  document.getElementById('q-tag').textContent = 'Question ' + String(curQ + 1).padStart(2, '0');
+  document.getElementById('q-text').textContent = qd.q;
+
+  const ol = document.getElementById('opts');
+  ol.innerHTML = '';
+  const nums = ['①','②','③','④'];
+  qd.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `
+      <span class="opt-num">${nums[i]}</span>
+      <span class="opt-body">
+        <span class="opt-main">${opt.text}</span>
+
+      </span>`;
+    btn.onclick = () => pickOpt(i);
+    ol.appendChild(btn);
+  });
+
+  // fade in
+  document.querySelector('#screen-question .card').classList.remove('fade-enter');
+  void document.querySelector('#screen-question .card').offsetWidth;
+  document.querySelector('#screen-question .card').classList.add('fade-enter');
+}
+
+function pickOpt(i) {
+  // highlight
+  document.querySelectorAll('.opt').forEach((b, idx) => {
+    b.classList.toggle('picking', idx === i);
+  });
+  const chosen = QUESTIONS[curQ].opts[i];
+  answers.push({ cat: chosen.cat, scent: chosen.scent });
+
+  setTimeout(() => {
+    if (curQ < QUESTIONS.length - 1) {
+      curQ++;
+      renderQ();
+    } else {
+      show('loading');
+      setTimeout(showResult, 2000);
+    }
+  }, 420);
+}
+
+function showResult() {
+  // tally
+  const catCount = {};
+  const scentCount = {};
+  answers.forEach(a => {
+    catCount[a.cat] = (catCount[a.cat] || 0) + 1;
+    scentCount[a.scent] = (scentCount[a.scent] || 0) + 1;
+  });
+  const topCat = Object.keys(catCount).reduce((a, b) => catCount[a] >= catCount[b] ? a : b);
+  const r = RESULTS[topCat];
+
+  const card = document.getElementById('result-card');
+  card.innerHTML = `
+    <div class="result-hero">
+      <span class="result-emoji">${r.emoji}</span>
+      <div class="result-badge">나의 향기 유형</div>
+      <p class="result-name">${r.name}</p>
+      <p class="result-sub-name">${r.nameEn}</p>
+    </div>
+    <div class="result-divider"></div>
+    <p class="result-quote">${r.quote.replace(/\n/g,'<br>')}</p>
+    <p class="result-desc">${r.desc}</p>
+
+    <a href="https://kundal.co.kr/product/list_fragrance.html?cate_no=85" class="result-link" target="_blank">
+      🛍️ 쿤달 디퓨저 라인업 보러가기
+    </a>
+    <div class="result-divider"></div>
+    <button class="btn btn-primary" onclick="startQuiz()">🔁 다시 테스트하기</button>
+    <button class="btn btn-outline" onclick="shareResult('${r.name}')">🔗 결과 공유하기</button>
+  `;
+  card.classList.remove('fade-enter');
+  void card.offsetWidth;
+  card.classList.add('fade-enter');
+  show('result');
+}
+
+function shareResult(name) {
+  if (navigator.share) {
+    navigator.share({ title: '나의 향기는 ' + name + '!', text: '쿤달 디퓨저 향기 테스트 결과: ' + name, url: location.href });
+  } else {
+    navigator.clipboard.writeText(location.href).then(() => alert('링크가 복사되었어요! 🔗'));
+  }
+}
+</script>
+</body>
+</html>
